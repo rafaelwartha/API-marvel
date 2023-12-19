@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Personagens da Marvel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ed1d24;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        li {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            text-align: center;
+            max-width: 200px;
+        }
+
+        img {
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Personagens da Marvel</h1>
+    <ul id="characters"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.18.0/js/md5.min.js"></script>
+
+    <script>
+        const publicKey = 'be15394d482df07619073e5e65d53eaa';
+        const privateKey = 'f04bfe4709a20a93f49a5c3f6ca3779f68c2e9f2';
+        const ts = new Date().getTime();
+        const hash = md5(ts + privateKey + publicKey);
+
+        const url = `https://gateway.marvel.com/v1/public/characters?ts=${ts}&apikey=${publicKey}&hash=${hash}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const characters = data.data.results;
+                const charactersList = document.getElementById('characters');
+
+                characters.forEach(character => {
+                    const listItem = document.createElement('li');
+                    const characterImage = document.createElement('img');
+                    characterImage.src = `${character.thumbnail.path}/portrait_xlarge.${character.thumbnail.extension}`;
+                    listItem.textContent = character.name;
+                    listItem.appendChild(characterImage);
+                    charactersList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error(error));
+    </script>
+</body>
+
+</html>
